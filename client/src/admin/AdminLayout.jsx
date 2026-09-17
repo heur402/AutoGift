@@ -8,15 +8,16 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex bg-slate-950">
+    <div className="h-screen flex bg-slate-950 overflow-hidden">
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col h-screen">
         <AdminTopbar
           onOpenSidebar={() => setSidebarOpen(true)}
           notifications={adminActivity.length}
         />
-        <div className="p-4 sm:p-6 lg:p-8 flex-1">
+        {/* This is the ONLY scrollable region */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <Outlet />
         </div>
       </div>
