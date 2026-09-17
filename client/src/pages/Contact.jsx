@@ -26,7 +26,7 @@ export default function Contact() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid lg:grid-cols-3 gap-10">
         {/* Info column */}
         <div className="space-y-6">
-          <InfoRow icon={<FiMail />}   label="Email"   value="hello@shoplite.example" />
+                  <InfoRow icon={<FiMail />} label="Email" value="hello@autogift.example" />
           <InfoRow icon={<FiPhone />}  label="Phone"   value="+1 (555) 010-0000" />
           <InfoRow icon={<FiMapPin />} label="Address" value="123 Demo Street, Sample City" />
           <p className="text-xs text-slate-500 pt-4">

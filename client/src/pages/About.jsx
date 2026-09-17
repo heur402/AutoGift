@@ -6,7 +6,7 @@ export default function About() {
   return (
     <>
       <PageHeader
-        title="About ShopLite"
+        title="About AutoGift"
         subtitle="A simple demo product catalog built with Vite, React, and Tailwind CSS."
       />
 
@@ -14,7 +14,7 @@ export default function About() {
         <div>
           <h2 className="text-xl font-semibold text-white">What this is</h2>
           <p className="mt-3 text-slate-300 leading-relaxed">
-            ShopLite is a frontend-only demonstration of a product catalog. It shows
+            AutoGift is a frontend-only demonstration of a product catalog. It shows
             a grid of sample products, individual product detail pages, search,
             filtering, and basic routing — all running on static dummy data.
           </p>
