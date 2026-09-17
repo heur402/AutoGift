@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+
+import PublicLayout from "./components/PublicLayout";
+
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -10,23 +11,34 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
+import AdminLayout from "./admin/AdminLayout";
+import AdminOverview from "./admin/pages/AdminOverview";
+import AdminUsers from "./admin/pages/AdminUsers";
+import AdminOrders from "./admin/pages/AdminOrders";
+import AdminRevenue from "./admin/pages/AdminRevenue";
+
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
-      <Navbar />
-      <main className="flex-1">
-        <Routes>
-          <Route path="/"            element={<Home />} />
-          <Route path="/products"    element={<Products />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/about"       element={<About />} />
-          <Route path="/contact"     element={<Contact />} />
-          <Route path="/privacy"     element={<Privacy />} />
-          <Route path="/terms"       element={<Terms />} />
-          <Route path="*"            element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <Routes>
+      {/* Public store — has Navbar + Footer */}
+      <Route element={<PublicLayout />}>
+        <Route path="/"            element={<Home />} />
+        <Route path="/products"    element={<Products />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/about"       element={<About />} />
+        <Route path="/contact"     element={<Contact />} />
+        <Route path="/privacy"     element={<Privacy />} />
+        <Route path="/terms"       element={<Terms />} />
+        <Route path="*"            element={<NotFound />} />
+      </Route>
+
+      {/* Admin — has Sidebar + Topbar only, no store chrome */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index          element={<AdminOverview />} />
+        <Route path="users"   element={<AdminUsers />} />
+        <Route path="orders"  element={<AdminOrders />} />
+        <Route path="revenue" element={<AdminRevenue />} />
+      </Route>
+    </Routes>
   );
 }
