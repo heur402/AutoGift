@@ -47,7 +47,7 @@ export default function ProductDetail() {
             type="button"
             className="mt-8 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold hover:opacity-90 transition"
           >
-            Add to Cart
+            Buy
           </button>
 
           <p className="mt-3 text-xs text-slate-500">Cart is UI only — no backend yet.</p>
