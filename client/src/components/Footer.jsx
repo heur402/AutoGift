@@ -25,10 +25,10 @@ export default function Footer() {
             <span className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500">
               <FiShoppingBag className="w-5 h-5" />
             </span>
-            ShopLite
+            AutoGift
           </Link>
           <p className="mt-4 text-sm text-slate-400 max-w-xs">
-            A demo product catalog built with Vite, React, and Tailwind.
+            A website dedicated to provide gift to their followers.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-6 text-center text-xs text-slate-500">
-        © 2026 ShopLite. All rights reserved.
+        © 2026 AutoGift. All rights reserved.
       </div>
     </footer>
   );

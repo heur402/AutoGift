@@ -20,7 +20,7 @@ export default function Navbar() {
             <span className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500">
               <FiShoppingBag className="w-5 h-5" />
             </span>
-            ShopLite
+            AutoGift
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
