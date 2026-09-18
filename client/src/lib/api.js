@@ -24,6 +24,12 @@ export const api = {
     request(`/auth/admin/${id}`, { method: "PATCH", body: JSON.stringify(profile) }),
   products: (query = "") => request(`/products${query}`),
   product: (id) => request(`/products/${id}`),
+  createProduct: (product) =>
+    request("/products", { method: "POST", body: JSON.stringify(product) }),
+  updateProduct: (id, product) =>
+    request(`/products/${id}`, { method: "PUT", body: JSON.stringify(product) }),
+  deleteProduct: (id) =>
+    request(`/products/${id}`, { method: "DELETE" }),
   users: (query = "") => request(`/users${query}`),
   user: (id) => request(`/users/${id}`),
   createUser: (user) =>

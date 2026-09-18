@@ -25,6 +25,7 @@ import AdminAuthLayout from "./admin/AdminAuthLayout";
 import AdminLogin from "./admin/AdminLogin";
 import AdminRegister from "./admin/AdminRegister";
 import AdminProfile from "./admin/pages/AdminProfile";
+import AdminProducts from "./admin/pages/AdminProducts";
 
 export default function App() {
   return (
@@ -55,6 +56,7 @@ export default function App() {
         <Route index          element={<AdminOverview />} />
         <Route path="users"   element={<AdminUsers />} />
         <Route path="orders"  element={<AdminOrders />} />
+        <Route path="products" element={<AdminProducts />} />
         <Route path="revenue" element={<AdminRevenue />} />
         <Route path="notifications" element={<AdminNotifications />} />
         <Route path="profile" element={<AdminProfile />} />
