@@ -14,7 +14,19 @@ import userRoutes from "./routes/userRoutes.js";
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: false }));
+const allowedOrigins = new Set([
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+]);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(new Error("Origin is not allowed by CORS"));
+  },
+  credentials: false,
+}));
 app.use(express.json());
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 

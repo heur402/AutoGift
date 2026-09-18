@@ -1,8 +1,11 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 async function request(path, options = {}) {
+  const headers = options.body
+    ? { "Content-Type": "application/json", ...options.headers }
+    : options.headers;
   const response = await fetch(`${API_URL}${path}`, {
-    headers: { "Content-Type": "application/json", ...options.headers },
+    ...(headers ? { headers } : {}),
     ...options,
   });
   const data = await response.json().catch(() => null);
