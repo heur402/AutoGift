@@ -18,7 +18,7 @@ export default function Login() {
     try {
       const user = await api.login(role === "admin"
         ? { email: form.email, password: form.password }
-        : form);
+        : { phone: form.phone, password: form.password });
       login(user);
       navigate(user.role === "admin" ? "/admin" : location.state?.from || "/profile");
     } catch (err) {
@@ -32,8 +32,9 @@ export default function Login() {
         <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-white/5">
           {["user", "admin"].map((value) => <button key={value} type="button" onClick={() => setRole(value)} className={`py-2 rounded-lg text-sm capitalize ${role === value ? "bg-indigo-500 text-white" : "text-slate-400"}`}>{value} login</button>)}
         </div>
-        <Field label="Email" type="email" value={form.email} onChange={(value) => setForm({ ...form, email: value })} required />
-        {role === "user" && <Field label="Phone number" type="tel" value={form.phone} onChange={(value) => setForm({ ...form, phone: value })} required />}
+        {role === "admin"
+          ? <Field label="Admin email" type="email" value={form.email} onChange={(value) => setForm({ ...form, email: value })} required />
+          : <Field label="Phone number" type="tel" value={form.phone} onChange={(value) => setForm({ ...form, phone: value })} required />}
         <Field label="Password" type="password" value={form.password} onChange={(value) => setForm({ ...form, password: value })} required />
         <FormMessage error={error} />
         <button className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold">

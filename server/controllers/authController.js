@@ -37,9 +37,10 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password, phone } = req.body;
-    const user = await User.findOne({ email: email?.toLowerCase() });
-    if (!user || !matchesPassword(password || "", user.passwordHash)) throw errorWithStatus("Invalid email or password", 401);
-    if (user.role === "user" && user.phone !== phone) throw errorWithStatus("The phone number does not match this account", 401);
+    const user = email
+      ? await User.findOne({ email: email.toLowerCase(), role: "admin" })
+      : await User.findOne({ phone, role: "user" });
+    if (!user || !matchesPassword(password || "", user.passwordHash)) throw errorWithStatus("Invalid login credentials", 401);
     if (user.status === "blocked") throw errorWithStatus("This account is blocked", 403);
     res.json(publicUser(user));
   } catch (error) {
