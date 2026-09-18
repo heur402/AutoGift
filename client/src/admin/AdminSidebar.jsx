@@ -1,7 +1,8 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
-  FiGrid, FiUsers, FiShoppingBag, FiDollarSign, FiBell, FiX,
+  FiGrid, FiUsers, FiShoppingBag, FiDollarSign, FiBell, FiLogOut, FiX,
 } from "react-icons/fi";
+import { useAuth } from "../lib/AuthContext";
 
 const nav = [
   { to: "/admin",         label: "Overview", icon: FiGrid,         end: true },
@@ -35,7 +36,32 @@ function NavItems({ onNavigate }) {
   );
 }
 
+function SidebarFooter({ onSignOut }) {
+  return (
+    <div className="mt-auto border-t border-white/10 p-4">
+      <p className="px-1 text-xs text-slate-500 leading-relaxed">
+        Review account activity, payments, and user reports.
+      </p>
+      <button
+        type="button"
+        onClick={onSignOut}
+        className="mt-4 flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:bg-rose-500/10 hover:text-rose-200 transition"
+      >
+        <FiLogOut /> Sign out
+      </button>
+    </div>
+  );
+}
+
 export default function AdminSidebar({ open, onClose }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const signOut = () => {
+    logout();
+    onClose?.();
+    navigate("/admin/login", { replace: true });
+  };
+
   return (
     <>
       {/* ─── Desktop sidebar (always visible, static) ─── */}
@@ -44,9 +70,7 @@ export default function AdminSidebar({ open, onClose }) {
           <span className="text-white font-semibold">Admin Panel</span>
         </div>
         <NavItems />
-        <div className="px-5 mt-6 text-xs text-slate-500 leading-relaxed">
-          Review account activity, payments, and user reports.
-        </div>
+        <SidebarFooter onSignOut={signOut} />
       </aside>
 
       {/* ─── Mobile drawer ─── */}
@@ -75,9 +99,7 @@ export default function AdminSidebar({ open, onClose }) {
           </button>
         </div>
         <NavItems onNavigate={onClose} />
-        <div className="px-5 mt-6 text-xs text-slate-500 leading-relaxed">
-          Review account activity, payments, and user reports.
-        </div>
+        <SidebarFooter onSignOut={signOut} />
       </aside>
     </>
   );
