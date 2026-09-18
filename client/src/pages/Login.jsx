@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { useAuth } from "../lib/AuthContext";
 import FormMessage from "../components/FormMessage";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "", phone: "" });
@@ -61,16 +62,32 @@ export function AuthCard({ title, subtitle, children }) {
 }
 
 export function Field({ label, type = "text", value, onChange, required }) {
+  const [visible, setVisible] = useState(false);
+  const isPassword = type === "password";
+  const inputType = isPassword && visible ? "text" : type;
+
   return (
     <label className="block">
       <span className="block mb-2 text-sm text-slate-300">{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        required={required}
-        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-indigo-500/60"
-      />
+      <span className="relative block">
+        <input
+          type={inputType}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          required={required}
+          className={`w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-indigo-500/60 ${isPassword ? "pr-12" : ""}`}
+        />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setVisible((current) => !current)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white"
+            aria-label={visible ? `Hide ${label}` : `Show ${label}`}
+          >
+            {visible ? <FiEyeOff /> : <FiEye />}
+          </button>
+        )}
+      </span>
     </label>
   );
 }
