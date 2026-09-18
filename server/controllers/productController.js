@@ -17,7 +17,16 @@ export const listProducts = async (req, res, next) => {
       ];
     }
 
-    const products = await Product.find(filter).sort({ id: 1 });
+    const sortMap = {
+      "price-asc": { price: 1 },
+      "price-desc": { price: -1 },
+      rating: { rating: -1 },
+      newest: { createdAt: -1 },
+    };
+    const limit = Number.parseInt(req.query.limit, 10);
+    const query = Product.find(filter).sort(sortMap[req.query.sort] || { id: 1 });
+    if (Number.isInteger(limit) && limit > 0) query.limit(Math.min(limit, 100));
+    const products = await query;
     res.json(products);
   } catch (error) {
     next(error);

@@ -45,29 +45,29 @@ const users = [
 ];
 
 const orders = [
-  { id: "o-5001", userId: "u-1001", product: "Wireless Headphones", amount: 89.99, date: "2026-02-10", status: "delivered" },
-  { id: "o-5002", userId: "u-1003", product: "27\" 4K Monitor", amount: 349.0, date: "2026-02-10", status: "shipped" },
-  { id: "o-5003", userId: "u-1009", product: "Smart Watch", amount: 199.0, date: "2026-02-09", status: "delivered" },
-  { id: "o-5004", userId: "u-1002", product: "Mechanical Keyboard", amount: 129.0, date: "2026-02-09", status: "pending" },
-  { id: "o-5005", userId: "u-1005", product: "Gaming Chair", amount: 229.0, date: "2026-02-08", status: "delivered" },
-  { id: "o-5006", userId: "u-1007", product: "External SSD 1TB", amount: 119.0, date: "2026-02-08", status: "shipped" },
-  { id: "o-5007", userId: "u-1004", product: "Laptop Stand", amount: 39.99, date: "2026-02-07", status: "cancelled" },
-  { id: "o-5008", userId: "u-1008", product: "Streaming Mic", amount: 109.0, date: "2026-02-07", status: "delivered" },
-  { id: "o-5009", userId: "u-1010", product: "Power Bank 20000mAh", amount: 49.99, date: "2026-02-06", status: "delivered" },
-  { id: "o-5010", userId: "u-1001", product: "Gaming Mouse", amount: 59.5, date: "2026-02-06", status: "delivered" },
-  { id: "o-5011", userId: "u-1003", product: "Bluetooth Speaker", amount: 74.99, date: "2026-02-05", status: "delivered" },
-  { id: "o-5012", userId: "u-1009", product: "Noise-Cancel Earbuds", amount: 99.0, date: "2026-02-05", status: "shipped" },
-  { id: "o-5013", userId: "u-1006", product: "HDMI Cable 2m", amount: 12.99, date: "2026-02-04", status: "delivered" },
-  { id: "o-5014", userId: "u-1005", product: "Desk Mat XL", amount: 27.5, date: "2026-02-03", status: "delivered" },
-  { id: "o-5015", userId: "u-1010", product: "Webcam 1080p", amount: 69.0, date: "2026-02-02", status: "pending" },
+  { id: "o-5001", userId: "u-1001", product: "Wireless Headphones", productId: "p-001", amount: 89.99, date: "2026-02-10", status: "delivered" },
+  { id: "o-5002", userId: "u-1003", product: "27\" 4K Monitor", productId: "p-004", amount: 349.0, date: "2026-02-10", status: "shipped" },
+  { id: "o-5003", userId: "u-1009", product: "Smart Watch", productId: "p-012", amount: 199.0, date: "2026-02-09", status: "delivered" },
+  { id: "o-5004", userId: "u-1002", product: "Mechanical Keyboard", productId: "p-002", amount: 129.0, date: "2026-02-09", status: "pending" },
+  { id: "o-5005", userId: "u-1005", product: "Gaming Chair", productId: "p-015", amount: 229.0, date: "2026-02-08", status: "delivered" },
+  { id: "o-5006", userId: "u-1007", product: "External SSD 1TB", productId: "p-009", amount: 119.0, date: "2026-02-08", status: "shipped" },
+  { id: "o-5007", userId: "u-1004", product: "Laptop Stand", productId: "p-008", amount: 39.99, date: "2026-02-07", status: "cancelled" },
+  { id: "o-5008", userId: "u-1008", product: "Streaming Mic", productId: "p-018", amount: 109.0, date: "2026-02-07", status: "delivered" },
+  { id: "o-5009", userId: "u-1010", product: "Power Bank 20000mAh", productId: "p-014", amount: 49.99, date: "2026-02-06", status: "delivered" },
+  { id: "o-5010", userId: "u-1001", product: "Gaming Mouse", productId: "p-003", amount: 59.5, date: "2026-02-06", status: "delivered" },
+  { id: "o-5011", userId: "u-1003", product: "Bluetooth Speaker", productId: "p-006", amount: 74.99, date: "2026-02-05", status: "delivered" },
+  { id: "o-5012", userId: "u-1009", product: "Noise-Cancel Earbuds", productId: "p-010", amount: 99.0, date: "2026-02-05", status: "shipped" },
+  { id: "o-5013", userId: "u-1006", product: "HDMI Cable 2m", productId: "p-017", amount: 12.99, date: "2026-02-04", status: "delivered" },
+  { id: "o-5014", userId: "u-1005", product: "Desk Mat XL", productId: "p-020", amount: 27.5, date: "2026-02-03", status: "delivered" },
+  { id: "o-5015", userId: "u-1010", product: "Webcam 1080p", productId: "p-007", amount: 69.0, date: "2026-02-02", status: "pending" },
 ];
 
 const notifications = [
-  { id: "a-1", message: "Order o-5002 marked as shipped", date: "2026-02-10", read: false },
-  { id: "a-2", message: "User David O. was blocked", date: "2026-02-10", read: false },
-  { id: "a-3", message: "New order o-5015 placed by Jack U.", date: "2026-02-10", read: false },
-  { id: "a-4", message: "Notification sent to Alice M.", date: "2026-02-10", read: false },
-  { id: "a-5", message: "Order o-5007 cancelled by user", date: "2026-02-09", read: true },
+  { id: "a-1", userId: "u-1003", message: "Order o-5002 marked as shipped", read: false },
+  { id: "a-2", userId: "u-1004", message: "User David O. was blocked", read: false },
+  { id: "a-3", userId: "u-1010", message: "New order o-5015 placed by Jack U.", read: false },
+  { id: "a-4", userId: "u-1001", message: "Notification sent to Alice M.", read: false },
+  { id: "a-5", userId: "u-1004", message: "Order o-5007 cancelled by user", read: true },
 ];
 
 const seed = async () => {
@@ -82,7 +82,7 @@ const seed = async () => {
   await User.insertMany(users);
   await Order.insertMany(orders);
   await Notification.insertMany(notifications);
-  console.log("AutoGift seed data inserted");
+  console.log(`Seeded ${products.length} products, ${users.length} users, ${orders.length} orders, ${notifications.length} notifications`);
   await mongoose.disconnect();
 };
 

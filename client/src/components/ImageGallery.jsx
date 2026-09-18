@@ -1,11 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function ImageGallery({ images = [], alt = "" }) {
   const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    setActive(0);
-  }, [images]);
 
   if (!images.length) {
     return (
@@ -18,7 +14,7 @@ export default function ImageGallery({ images = [], alt = "" }) {
   return (
     <div>
       <div className="aspect-square rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
-        <img src={images[active]} alt={alt} className="w-full h-full object-cover" />
+        <img src={images[Math.min(active, images.length - 1)]} alt={alt} className="w-full h-full object-cover" />
       </div>
 
       {images.length > 1 && (

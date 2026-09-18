@@ -8,15 +8,7 @@ const errorWithStatus = (message, statusCode) => {
 };
 
 export const listNotifications = async (req, res, next) => {
-  try {
-    const filter = {};
-    if (req.query.userId) filter.userId = req.query.userId;
-    if (req.query.read !== undefined) filter.read = req.query.read === "true";
-    const notifications = await Notification.find(filter).sort({ date: -1, id: 1 });
-    res.json(notifications);
-  } catch (error) {
-    next(error);
-  }
+  next(errorWithStatus("Use /api/notifications/:userId", 404));
 };
 
 export const getNotification = async (req, res, next) => {
@@ -38,14 +30,26 @@ export const createNotification = async (req, res, next) => {
       throw errorWithStatus("User not found", 404);
     }
 
+    if (!req.body.userId) throw errorWithStatus("userId is required", 400);
+    if (!(await User.exists({ id: req.body.userId }))) {
+      throw errorWithStatus("User not found", 404);
+    }
     const notification = await Notification.create({
       id: req.body.id || `n-${Date.now()}`,
-      userId: req.body.userId || null,
+      userId: req.body.userId,
       message: req.body.message,
       read: req.body.read || false,
-      date: req.body.date || new Date(),
     });
     res.status(201).json(notification);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getNotificationsByUser = async (req, res, next) => {
+  try {
+    const notifications = await Notification.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+    res.json(notifications);
   } catch (error) {
     next(error);
   }

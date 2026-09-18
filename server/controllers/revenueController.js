@@ -1,4 +1,5 @@
 import Order from "../models/Order.js";
+import User from "../models/User.js";
 
 const monthLabel = (date) =>
   date.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
@@ -47,14 +48,27 @@ export const getRevenueSummary = async (req, res, next) => {
       months[0]
     );
 
+    const topSpenders = await User.aggregate([
+      {
+        $lookup: {
+          from: "orders",
+          let: { userId: "$id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$userId", "$$userId"] }, status: { $ne: "cancelled" } } },
+          ],
+          as: "orders",
+        },
+      },
+      { $project: { id: 1, name: 1, email: 1, spent: { $sum: "$orders.amount" } } },
+      { $sort: { spent: -1 } },
+      { $limit: 5 },
+    ]);
     res.json({
-      months,
-      revenue: months,
       total,
-      average: Number((total / 6).toFixed(2)),
-      orderCount,
-      averageOrderValue: orderCount ? Number((total / orderCount).toFixed(2)) : 0,
-      bestMonth,
+      monthly: months.map(({ month, amount }) => ({ month, amount })),
+      avgOrder: orderCount ? Number((total / orderCount).toFixed(2)) : 0,
+      bestMonth: { month: bestMonth.month, amount: bestMonth.amount },
+      topSpenders,
     });
   } catch (error) {
     next(error);

@@ -1,13 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiSearch, FiUserX, FiUserCheck, FiBell, FiX } from "react-icons/fi";
-import { adminUsers as seed } from "../adminData";
+import { api } from "../../lib/api";
 
 export default function AdminUsers() {
-  const [users, setUsers] = useState(seed);
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [notifyTarget, setNotifyTarget] = useState(null);
   const [notifyText, setNotifyText] = useState("");
   const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    api.users().then(setUsers).catch((err) => setError(err.message));
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -21,22 +26,23 @@ export default function AdminUsers() {
   }, [users, query]);
 
   const toggleBlock = (id) => {
-    setUsers((list) =>
-      list.map((u) =>
-        u.id === id
-          ? { ...u, status: u.status === "blocked" ? "active" : "blocked" }
-          : u
-      )
-    );
+    const user = users.find((item) => item.id === id);
+    api.updateUserStatus(id, user.status === "blocked" ? "active" : "blocked")
+      .then((updated) => setUsers((list) => list.map((item) => item.id === id ? updated : item)))
+      .catch((err) => setError(err.message));
   };
 
   const sendNotify = (e) => {
     e.preventDefault();
     if (!notifyText.trim()) return;
-    setToast(`Notification sent to ${notifyTarget.name} (UI only).`);
-    setNotifyTarget(null);
-    setNotifyText("");
-    setTimeout(() => setToast(null), 3000);
+    api.createNotification(notifyTarget.id, notifyText)
+      .then(() => {
+        setToast(`Notification sent to ${notifyTarget.name}.`);
+        setNotifyTarget(null);
+        setNotifyText("");
+        setTimeout(() => setToast(null), 3000);
+      })
+      .catch((err) => setError(err.message));
   };
 
   return (
@@ -53,6 +59,7 @@ export default function AdminUsers() {
           {toast}
         </div>
       )}
+      {error && <p className="text-rose-300">{error}</p>}
 
       <div className="relative max-w-sm">
         <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />

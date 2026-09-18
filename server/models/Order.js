@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema(
     id: { type: String, required: true, unique: true, trim: true },
     userId: { type: String, required: true, trim: true },
     product: { type: String, required: true, trim: true },
+    productId: { type: String, required: true, trim: true },
     amount: { type: Number, required: true, min: 0 },
     date: { type: Date, required: true, default: Date.now },
     status: {
@@ -15,5 +16,8 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+orderSchema.index({ userId: 1 });
+orderSchema.index({ status: 1 });
 
 export default mongoose.model("Order", orderSchema);

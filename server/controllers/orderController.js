@@ -55,18 +55,21 @@ export const createOrder = async (req, res, next) => {
     if (!user) throw errorWithStatus("User not found", 404);
 
     let productName = req.body.product;
+    let productId = req.body.productId;
     if (req.body.productId) {
       const product = await Product.findOne({ id: req.body.productId });
       if (!product) throw errorWithStatus("Product not found", 404);
       productName = product.name;
+      productId = product.id;
       if (req.body.amount === undefined) req.body.amount = product.price;
     }
 
-    if (!productName) throw errorWithStatus("product or productId is required", 400);
+    if (!productName || !productId) throw errorWithStatus("productId and product are required", 400);
     const order = await Order.create({
       id: req.body.id || `o-${Date.now()}`,
       userId: req.body.userId,
       product: productName,
+      productId,
       amount: req.body.amount,
       date: req.body.date || new Date(),
       status: req.body.status || "pending",

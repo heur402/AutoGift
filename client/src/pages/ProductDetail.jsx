@@ -1,13 +1,19 @@
 import { Link, useParams } from "react-router-dom";
+import { api } from "../lib/api";
+import { useApi } from "../lib/useApi";
+import { useCart } from "../lib/CartContext";
+import { useState } from "react";
 import { FiArrowLeft, FiStar } from "react-icons/fi";
-import { products } from "../assets/products";
 import ImageGallery from "../components/ImageGallery";
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const product = products.find((p) => p.id === id);
+  const { data: product, loading, error } = useApi(() => api.product(id), [id]);
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
 
-  if (!product) {
+  if (loading) return <section className="max-w-3xl mx-auto px-4 py-20 text-center text-slate-400">Loading product...</section>;
+  if (error || !product) {
     return (
       <section className="max-w-3xl mx-auto px-4 py-20 text-center">
         <h1 className="text-2xl font-bold text-white">Product not found</h1>
@@ -26,7 +32,7 @@ export default function ProductDetail() {
       </Link>
 
       <div className="mt-6 grid lg:grid-cols-2 gap-10">
-        <ImageGallery images={product.images} alt={product.name} />
+        <ImageGallery key={product.id} images={product.images} alt={product.name} />
 
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500">{product.category}</p>
@@ -45,12 +51,13 @@ export default function ProductDetail() {
 
           <button
             type="button"
+            onClick={() => { addItem(product); setAdded(true); }}
             className="mt-8 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold hover:opacity-90 transition"
           >
-            Buy
+            {added ? "Added to cart" : "Add to cart"}
           </button>
 
-          <p className="mt-3 text-xs text-slate-500">Cart is UI only — no backend yet.</p>
+          <p className="mt-3 text-xs text-slate-500">Orders are sent to the backend when you checkout.</p>
         </div>
       </div>
     </section>

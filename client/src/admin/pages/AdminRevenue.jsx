@@ -1,21 +1,15 @@
 import { FiDollarSign, FiTrendingUp, FiAward, FiBarChart2 } from "react-icons/fi";
 import StatCard from "../StatCard";
-import { adminRevenue, adminUsers, adminOrders } from "../adminData";
+import { api } from "../../lib/api";
+import { useApi } from "../../lib/useApi";
 
 export default function AdminRevenue() {
-  const total = adminRevenue.reduce((s, m) => s + m.amount, 0);
-  const best  = adminRevenue.reduce((a, b) => (b.amount > a.amount ? b : a), adminRevenue[0]);
-  const avg   = total / adminRevenue.length;
-  const max   = Math.max(...adminRevenue.map((m) => m.amount));
-
-  const topSpenders = [...adminUsers]
-    .sort((a, b) => b.spent - a.spent)
-    .slice(0, 5);
-
-  const orderCount = adminOrders.length;
-  const avgOrder   = orderCount
-    ? adminOrders.reduce((s, o) => s + o.amount, 0) / orderCount
-    : 0;
+  const { data, loading, error } = useApi(api.revenue, []);
+  if (loading) return <p className="text-slate-400">Loading revenue...</p>;
+  if (error) return <p className="text-rose-300">{error}</p>;
+  const { total, monthly, avgOrder, bestMonth: best, topSpenders } = data;
+  const avg = monthly.length ? total / monthly.length : 0;
+  const max = Math.max(...monthly.map((m) => m.amount), 0);
 
   return (
     <div className="space-y-8">
@@ -37,7 +31,7 @@ export default function AdminRevenue() {
       <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
         <h3 className="text-white font-semibold">Monthly Revenue</h3>
         <div className="mt-6 flex items-end gap-3 h-48">
-          {adminRevenue.map((m) => {
+          {monthly.map((m) => {
             const h = max ? (m.amount / max) * 100 : 0;
             return (
               <div key={m.month} className="flex-1 flex flex-col items-center gap-2">

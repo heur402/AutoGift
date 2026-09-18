@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { products } from "../assets/products";
+import { api } from "../lib/api";
 import ProductGrid from "../components/ProductGrid";
 import PageHeader from "../components/PageHeader";
 
@@ -10,36 +10,32 @@ export default function Products() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(ALL);
   const [sort, setSort] = useState("newest");
+  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const categories = useMemo(() => {
-    const set = new Set(products.map((p) => p.category));
-    return [ALL, ...Array.from(set).sort()];
+  useEffect(() => {
+    api.products("?limit=100").then(setAllProducts).catch((err) => setError(err.message));
   }, []);
 
-  const filtered = useMemo(() => {
-    let list = [...products];
-
-    if (category !== ALL) {
-      list = list.filter((p) => p.category === category);
-    }
-
-    if (query.trim()) {
-      const q = query.trim().toLowerCase();
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q)
-      );
-    }
-
-    if (sort === "price-asc")  list.sort((a, b) => a.price - b.price);
-    if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
-    if (sort === "rating")     list.sort((a, b) => b.rating - a.rating);
-    // "newest" keeps original order from the data file
-
-    return list;
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (query.trim()) params.set("search", query.trim());
+    if (category !== ALL) params.set("category", category);
+    if (sort) params.set("sort", sort);
+    api.products(`?${params}`)
+      .then(setProducts)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, [query, category, sort]);
+
+  const categories = useMemo(() => {
+    const set = new Set(allProducts.map((p) => p.category));
+    return [ALL, ...Array.from(set).sort()];
+  }, [allProducts]);
+
+  const filtered = products;
 
   return (
     <>
@@ -98,10 +94,10 @@ export default function Products() {
 
         {/* Result count */}
         <p className="text-sm text-slate-500 mb-4">
-          {filtered.length} {filtered.length === 1 ? "product" : "products"}
+          {loading ? "Loading..." : `${filtered.length} ${filtered.length === 1 ? "product" : "products"}`}
         </p>
 
-        <ProductGrid products={filtered} />
+        {error ? <p className="text-rose-300">{error}</p> : <ProductGrid products={filtered} />}
       </section>
     </>
   );

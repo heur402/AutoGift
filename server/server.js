@@ -1,24 +1,25 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import errorHandler from "./middleware/errorHandler.js";
 import notFound from "./middleware/notFound.js";
-import notificationRoutes from "./routes/notification.js";
-import orderRoutes from "./routes/order.js";
-import productRoutes from "./routes/product.js";
-import revenueRoutes from "./routes/revenue.js";
-import userRoutes from "./routes/user.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import revenueRoutes from "./routes/revenueRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
+dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: false }));
 app.use(express.json());
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
 app.get("/api/health", (req, res) => {
-  res.json({ message: "AutoGift API is running" });
+  res.json({ ok: true });
 });
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
@@ -37,12 +38,7 @@ const startServer = async () => {
   });
 };
 
-if (process.env.NODE_ENV !== "test") {
-  startServer().catch((error) => {
-    console.error(`Unable to start server: ${error.message}`);
-    process.exitCode = 1;
-  });
-}
+startServer();
 
 export { app, startServer };
 export default app;

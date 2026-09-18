@@ -1,14 +1,24 @@
 import { FiUsers, FiShoppingBag, FiDollarSign, FiTrendingUp } from "react-icons/fi";
 import StatCard from "../StatCard";
-import { adminUsers, adminOrders, adminActivity, adminRevenue } from "../adminData";
+import { api } from "../../lib/api";
+import { useApi } from "../../lib/useApi";
 
 export default function AdminOverview() {
-  const totalUsers    = adminUsers.length;
-  const blockedUsers  = adminUsers.filter((u) => u.status === "blocked").length;
-  const totalOrders   = adminOrders.length;
-  const totalRevenue  = adminRevenue.reduce((s, m) => s + m.amount, 0);
-  const lastMonth     = adminRevenue[adminRevenue.length - 1];
-  const prevMonth     = adminRevenue[adminRevenue.length - 2];
+  const usersState = useApi(api.users, []);
+  const ordersState = useApi(api.orders, []);
+  const revenueState = useApi(api.revenue, []);
+  if (usersState.loading || ordersState.loading || revenueState.loading) return <p className="text-slate-400">Loading overview...</p>;
+  const error = usersState.error || ordersState.error || revenueState.error;
+  if (error) return <p className="text-rose-300">{error}</p>;
+  const users = usersState.data;
+  const orders = ordersState.data;
+  const revenue = revenueState.data;
+  const totalUsers = users.length;
+  const blockedUsers = users.filter((u) => u.status === "blocked").length;
+  const totalOrders = orders.length;
+  const totalRevenue = revenue.total;
+  const lastMonth = revenue.monthly[revenue.monthly.length - 1];
+  const prevMonth = revenue.monthly[revenue.monthly.length - 2];
   const growth        = prevMonth
     ? (((lastMonth.amount - prevMonth.amount) / prevMonth.amount) * 100).toFixed(1)
     : "0.0";
@@ -44,7 +54,7 @@ export default function AdminOverview() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {adminOrders.slice(0, 6).map((o) => (
+                {orders.slice(0, 6).map((o) => (
                   <tr key={o.id}>
                     <td className="py-3 pr-4 text-slate-300">{o.id}</td>
                     <td className="py-3 pr-4 text-slate-300">{o.product}</td>
@@ -63,10 +73,10 @@ export default function AdminOverview() {
         <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
           <h3 className="text-white font-semibold">Recent Activity</h3>
           <ul className="mt-4 space-y-3">
-            {adminActivity.map((a) => (
-              <li key={a.id} className="text-sm">
-                <p className="text-slate-300">{a.text}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{a.time}</p>
+            {orders.slice(0, 5).map((o) => (
+              <li key={o.id} className="text-sm">
+                <p className="text-slate-300">Order {o.id} is {o.status}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{new Date(o.date).toLocaleDateString()}</p>
               </li>
             ))}
           </ul>

@@ -1,16 +1,24 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { adminOrders, adminUsers } from "../adminData";
-
-const userById = Object.fromEntries(adminUsers.map((u) => [u.id, u]));
+import { api } from "../../lib/api";
 
 export default function AdminOrders() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
+  const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState("");
+  const [updating, setUpdating] = useState(null);
+  useEffect(() => {
+    Promise.all([api.orders(), api.users()])
+      .then(([orderData, userData]) => { setOrders(orderData); setUsers(userData); })
+      .catch((err) => setError(err.message));
+  }, []);
+  const userById = Object.fromEntries(users.map((u) => [u.id, u]));
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return adminOrders.filter((o) => {
+    return orders.filter((o) => {
       const matchesStatus = status === "all" || o.status === status;
       const buyer = userById[o.userId];
       const matchesQuery =
@@ -20,7 +28,15 @@ export default function AdminOrders() {
         (buyer?.name.toLowerCase().includes(q) ?? false);
       return matchesStatus && matchesQuery;
     });
-  }, [query, status]);
+  }, [query, status, orders, userById]);
+
+  const changeStatus = (id, nextStatus) => {
+    setUpdating(id);
+    api.updateOrderStatus(id, nextStatus)
+      .then((updated) => setOrders((current) => current.map((order) => order.id === id ? updated : order)))
+      .catch((err) => setError(err.message))
+      .finally(() => setUpdating(null));
+  };
 
   return (
     <div className="space-y-6">
@@ -28,6 +44,7 @@ export default function AdminOrders() {
         <h2 className="text-xl sm:text-2xl font-bold text-white">Orders</h2>
         <p className="mt-1 text-sm text-slate-400">All orders across all users (demo).</p>
       </header>
+      {error && <p className="text-rose-300">{error}</p>}
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative w-full sm:max-w-sm">
@@ -76,7 +93,9 @@ export default function AdminOrders() {
                   <td className="px-4 py-3 text-slate-300">${o.amount.toFixed(2)}</td>
                   <td className="px-4 py-3 text-slate-400">{o.date}</td>
                   <td className="px-4 py-3">
-                    <StatusPill status={o.status} />
+                    <select value={o.status} disabled={updating === o.id} onChange={(event) => changeStatus(o.id, event.target.value)} className="px-2 py-1 rounded-lg bg-slate-900 border border-white/10 text-slate-300 text-xs">
+                      {["pending", "shipped", "delivered", "cancelled"].map((value) => <option key={value} value={value}>{value}</option>)}
+                    </select>
                   </td>
                 </tr>
               ))}
@@ -92,19 +111,5 @@ export default function AdminOrders() {
         </div>
       </div>
     </div>
-  );
-}
-
-function StatusPill({ status }) {
-  const styles = {
-    delivered: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
-    shipped:   "bg-indigo-500/10 text-indigo-300 border-indigo-500/20",
-    pending:   "bg-amber-500/10 text-amber-300 border-amber-500/20",
-    cancelled: "bg-rose-500/10 text-rose-300 border-rose-500/20",
-  };
-  return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-xs border ${styles[status] ?? styles.pending}`}>
-      {status}
-    </span>
   );
 }

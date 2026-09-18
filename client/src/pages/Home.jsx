@@ -1,8 +1,9 @@
-import { products } from "../assets/products";
+import { api } from "../lib/api";
+import { useApi } from "../lib/useApi";
 import ProductGrid from "../components/ProductGrid";
 
 export default function Home() {
-  const latest = products.slice(0, 20);
+  const { data: latest = [], loading, error } = useApi(() => api.products("?sort=newest&limit=20"), []);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -13,7 +14,9 @@ export default function Home() {
         </p>
       </header>
 
-      <ProductGrid products={latest} />
+      {loading && <p className="text-slate-400">Loading products...</p>}
+      {error && <p className="text-rose-300">{error}</p>}
+      {!loading && !error && <ProductGrid products={latest} />}
     </section>
   );
 }
