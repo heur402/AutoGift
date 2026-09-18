@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiTrash2 } from "react-icons/fi";
 import { useCart } from "../lib/CartContext";
 import { useAuth } from "../lib/AuthContext";
@@ -11,6 +11,8 @@ export default function Cart() {
   const [message, setMessage] = useState("");
   const [placing, setPlacing] = useState(false);
   const navigate = useNavigate();
+
+  if (user?.role === "admin") return <Navigate to="/admin" replace />;
 
   const placeOrder = async () => {
     if (!user) {

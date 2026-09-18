@@ -35,9 +35,9 @@ export default function AdminTopbar({ onOpenSidebar, notifications }) {
           )}
         </Link>
 
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-semibold">
+        <Link to="/admin/profile" className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-semibold" aria-label="Admin settings">
           {initials}
-        </div>
+        </Link>
       </div>
     </header>
   );

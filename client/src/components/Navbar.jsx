@@ -11,9 +11,10 @@ const links = [
   { to: "/contact", label: "Contact" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ forceGuest = false }) {
   const [open, setOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user: authenticatedUser, logout } = useAuth();
+  const user = forceGuest ? null : authenticatedUser;
   const { items } = useCart();
 
   return (

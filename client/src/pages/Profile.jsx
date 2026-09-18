@@ -22,6 +22,7 @@ export default function Profile() {
   }, [user]);
 
   if (!user) return <Navigate to="/login" replace />;
+  if (user.role === "admin") return <Navigate to="/admin/profile" replace />;
 
   const refreshUser = () => api.user(user.id).then(login).catch((err) => setError(err.message));
   const updateWallet = async (type) => {

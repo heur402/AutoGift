@@ -57,3 +57,20 @@ export const registerAdmin = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateAdminProfile = async (req, res, next) => {
+  try {
+    const admin = await User.findOne({ id: req.params.id, role: "admin" });
+    if (!admin) throw errorWithStatus("Admin account not found", 404);
+    const { name, email, phone, password } = req.body;
+    if (!name || !email || !phone) throw errorWithStatus("Name, email, and phone are required", 400);
+    admin.name = name;
+    admin.email = email;
+    admin.phone = phone;
+    if (password?.trim()) admin.passwordHash = hashPassword(password);
+    await admin.save();
+    res.json(publicUser(admin));
+  } catch (error) {
+    next(error);
+  }
+};

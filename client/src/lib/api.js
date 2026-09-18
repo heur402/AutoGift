@@ -20,6 +20,8 @@ export const api = {
     request("/auth/register", { method: "POST", body: JSON.stringify(user) }),
   registerAdmin: (user) =>
     request("/auth/admin/register", { method: "POST", body: JSON.stringify(user) }),
+  updateAdminProfile: (id, profile) =>
+    request(`/auth/admin/${id}`, { method: "PATCH", body: JSON.stringify(profile) }),
   products: (query = "") => request(`/products${query}`),
   product: (id) => request(`/products/${id}`),
   users: (query = "") => request(`/users${query}`),

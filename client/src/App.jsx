@@ -24,6 +24,7 @@ import AdminNotifications from "./admin/pages/AdminNotifications";
 import AdminAuthLayout from "./admin/AdminAuthLayout";
 import AdminLogin from "./admin/AdminLogin";
 import AdminRegister from "./admin/AdminRegister";
+import AdminProfile from "./admin/pages/AdminProfile";
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
         <Route path="orders"  element={<AdminOrders />} />
         <Route path="revenue" element={<AdminRevenue />} />
         <Route path="notifications" element={<AdminNotifications />} />
+        <Route path="profile" element={<AdminProfile />} />
       </Route>
     </Routes>
   );
