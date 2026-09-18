@@ -14,6 +14,12 @@ async function request(path, options = {}) {
 }
 
 export const api = {
+  login: (credentials) =>
+    request("/auth/login", { method: "POST", body: JSON.stringify(credentials) }),
+  register: (user) =>
+    request("/auth/register", { method: "POST", body: JSON.stringify(user) }),
+  registerAdmin: (user) =>
+    request("/auth/admin/register", { method: "POST", body: JSON.stringify(user) }),
   products: (query = "") => request(`/products${query}`),
   product: (id) => request(`/products/${id}`),
   users: (query = "") => request(`/users${query}`),
@@ -22,8 +28,8 @@ export const api = {
     request("/users", { method: "POST", body: JSON.stringify(user) }),
   updateUserStatus: (id, status) =>
     request(`/users/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
-  createNotification: (userId, message) =>
-    request("/notifications", { method: "POST", body: JSON.stringify({ userId, message }) }),
+  createNotification: (userId, title, message) =>
+    request("/notifications", { method: "POST", body: JSON.stringify({ userId, title, message }) }),
   orders: (query = "") => request(`/orders${query}`),
   createOrder: (order) =>
     request("/orders", { method: "POST", body: JSON.stringify(order) }),
@@ -31,4 +37,7 @@ export const api = {
     request(`/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
   revenue: () => request("/revenue/summary"),
   notifications: (userId) => request(`/notifications/${userId}`),
+  wallet: (userId) => request(`/wallet/${userId}`),
+  createWalletTransaction: (userId, type, amount) =>
+    request(`/wallet/${userId}`, { method: "POST", body: JSON.stringify({ type, amount }) }),
 };

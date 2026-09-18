@@ -65,12 +65,18 @@ export const createOrder = async (req, res, next) => {
     }
 
     if (!productName || !productId) throw errorWithStatus("productId and product are required", 400);
+    const amount = Number(req.body.amount);
+    if (!Number.isFinite(amount) || amount <= 0) throw errorWithStatus("A valid order amount is required", 400);
+    if (user.balance < amount) throw errorWithStatus("Insufficient balance. Deposit funds before buying.", 400);
+    user.balance -= amount;
+    user.verified = true;
+    await user.save();
     const order = await Order.create({
       id: req.body.id || `o-${Date.now()}`,
       userId: req.body.userId,
       product: productName,
       productId,
-      amount: req.body.amount,
+      amount,
       date: req.body.date || new Date(),
       status: req.body.status || "pending",
     });

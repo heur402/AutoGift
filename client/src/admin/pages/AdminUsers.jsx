@@ -8,7 +8,10 @@ export default function AdminUsers() {
   const [query, setQuery] = useState("");
   const [notifyTarget, setNotifyTarget] = useState(null);
   const [notifyText, setNotifyText] = useState("");
+  const [notifyTitle, setNotifyTitle] = useState("");
   const [toast, setToast] = useState(null);
+  const [reportUser, setReportUser] = useState(null);
+  const [reportOrders, setReportOrders] = useState([]);
 
   useEffect(() => {
     api.users().then(setUsers).catch((err) => setError(err.message));
@@ -35,14 +38,20 @@ export default function AdminUsers() {
   const sendNotify = (e) => {
     e.preventDefault();
     if (!notifyText.trim()) return;
-    api.createNotification(notifyTarget.id, notifyText)
+    api.createNotification(notifyTarget.id, notifyTitle, notifyText)
       .then(() => {
         setToast(`Notification sent to ${notifyTarget.name}.`);
         setNotifyTarget(null);
         setNotifyText("");
+        setNotifyTitle("");
         setTimeout(() => setToast(null), 3000);
       })
       .catch((err) => setError(err.message));
+  };
+
+  const showReport = (user) => {
+    setReportUser(user);
+    api.orders(`?userId=${encodeURIComponent(user.id)}`).then(setReportOrders).catch((err) => setError(err.message));
   };
 
   return (
@@ -89,8 +98,10 @@ export default function AdminUsers() {
               {filtered.map((u) => (
                 <tr key={u.id} className="hover:bg-white/[0.02]">
                   <td className="px-4 py-3">
+                    <button type="button" onClick={() => showReport(u)} className="text-left hover:text-indigo-300">
                     <p className="text-white font-medium">{u.name}</p>
                     <p className="text-xs text-slate-500">{u.email}</p>
+                    </button>
                   </td>
                   <td className="px-4 py-3 text-slate-400">{u.joined}</td>
                   <td className="px-4 py-3 text-slate-300">{u.orders}</td>
@@ -131,6 +142,22 @@ export default function AdminUsers() {
                         {u.status === "blocked" ? <FiUserCheck /> : <FiUserX />}
                       </button>
                     </div>
+
+                    {reportUser && (
+                      <section className="p-5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+                        <div className="flex items-start justify-between gap-4">
+                          <div><p className="text-xs uppercase tracking-wide text-indigo-300">User report</p><h3 className="mt-1 text-lg font-semibold text-white">{reportUser.name}</h3><p className="text-sm text-slate-400">{reportUser.email} · {reportUser.phone || "phone unavailable"}</p></div>
+                          <button type="button" onClick={() => setReportUser(null)} className="text-slate-400 hover:text-white"><FiX /></button>
+                        </div>
+                        <div className="mt-4 grid sm:grid-cols-4 gap-3">
+                          <ReportStat label="Deposited" value={`$${Number(reportUser.deposited || 0).toFixed(2)}`} />
+                          <ReportStat label="Withdrawn" value={`$${Number(reportUser.withdrawn || 0).toFixed(2)}`} />
+                          <ReportStat label="In use" value={`$${Number(reportUser.spent || 0).toFixed(2)}`} />
+                          <ReportStat label="Balance" value={`$${Number(reportUser.balance || 0).toFixed(2)}`} />
+                        </div>
+                        <div className="mt-5 space-y-2">{reportOrders.map((order) => <div key={order.id} className="flex justify-between text-sm"><span className="text-slate-300">{order.product}</span><span className="text-indigo-200">${Number(order.amount).toFixed(2)}</span></div>)}{!reportOrders.length && <p className="text-sm text-slate-500">No product purchases recorded.</p>}</div>
+                      </section>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -168,6 +195,10 @@ export default function AdminUsers() {
             </div>
 
             <label className="block mt-5">
+              <span className="block text-sm text-slate-300 mb-2">Title</span>
+              <input value={notifyTitle} onChange={(e) => setNotifyTitle(e.target.value)} required className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-indigo-500/60" placeholder="e.g. Deposit confirmed" />
+            </label>
+            <label className="block mt-5">
               <span className="block text-sm text-slate-300 mb-2">Message</span>
               <textarea
                 rows={4}
@@ -175,6 +206,7 @@ export default function AdminUsers() {
                 onChange={(e) => setNotifyText(e.target.value)}
                 className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/60 resize-none"
                 placeholder="Write a short message..."
+                required
               />
             </label>
 
@@ -198,4 +230,8 @@ export default function AdminUsers() {
       )}
     </div>
   );
+}
+
+function ReportStat({ label, value }) {
+  return <div className="p-3 rounded-xl bg-slate-950/40"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 text-white font-semibold">{value}</p></div>;
 }

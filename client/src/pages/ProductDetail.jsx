@@ -54,10 +54,10 @@ export default function ProductDetail() {
             onClick={() => { addItem(product); setAdded(true); }}
             className="mt-8 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold hover:opacity-90 transition"
           >
-            {added ? "Added to cart" : "Add to cart"}
+            {added ? "Ready for checkout" : "Buy this product"}
           </button>
 
-          <p className="mt-3 text-xs text-slate-500">Orders are sent to the backend when you checkout.</p>
+          <p className="mt-3 text-xs text-slate-500">One product per order. Your balance is charged at checkout.</p>
         </div>
       </div>
     </section>

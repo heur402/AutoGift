@@ -10,6 +10,8 @@ import orderRoutes from "./routes/orderRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import revenueRoutes from "./routes/revenueRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import walletRoutes from "./routes/walletRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -34,6 +36,8 @@ app.get("/api/health", (req, res) => {
   res.json({ ok: true });
 });
 app.use("/api/products", productRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/wallet", walletRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/revenue", revenueRoutes);

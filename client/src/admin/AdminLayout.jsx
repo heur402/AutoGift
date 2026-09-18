@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import AdminTopbar from "./AdminTopbar";
 import { useApi } from "../lib/useApi";
 import { api } from "../lib/api";
+import { useAuth } from "../lib/AuthContext";
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
   const { data, error } = useApi(api.orders, []);
   const orders = data ?? [];
+  if (!user || user.role !== "admin") return <Navigate to="/login" replace />;
 
   return (
     <div className="h-screen flex bg-slate-950 overflow-hidden">

@@ -6,7 +6,7 @@ import FormMessage from "../components/FormMessage";
 import { AuthCard, Field } from "./Login";
 
 export default function Register() {
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "" });
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function Register() {
     event.preventDefault();
     setError("");
     try {
-      const user = await api.createUser(form);
+      const user = await api.register(form);
       login(user);
       navigate("/profile");
     } catch (err) {
@@ -29,7 +29,8 @@ export default function Register() {
       <form onSubmit={submit} className="space-y-5">
         <Field label="Name" value={form.name} onChange={update("name")} required />
         <Field label="Email" type="email" value={form.email} onChange={update("email")} required />
-        <p className="text-xs text-slate-500">Demo mode does not collect or store passwords yet.</p>
+        <Field label="Phone number" type="tel" value={form.phone} onChange={update("phone")} required />
+        <Field label="Password" type="password" value={form.password} onChange={update("password")} required />
         <FormMessage error={error} />
         <button className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold">
           Create account

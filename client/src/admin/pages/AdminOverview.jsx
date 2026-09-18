@@ -28,7 +28,7 @@ export default function AdminOverview() {
       <header>
         <h2 className="text-xl sm:text-2xl font-bold text-white">Overview</h2>
         <p className="mt-1 text-sm text-slate-400">
-          Demo numbers — no real users, orders, or payments.
+          Monitor users, orders, and account activity from one place.
         </p>
       </header>
 

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState, useCallback } from "react";
 
 const CartContext = createContext(null);
 
@@ -17,17 +17,18 @@ export function CartProvider({ children }) {
     setItems(next);
   };
 
-  const addItem = (product) => {
-    const existing = items.find((item) => item.id === product.id);
-    const next = existing
-      ? items.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
-      : [...items, { ...product, quantity: 1 }];
+  const addItem = useCallback((product) => {
+    // Orders are intentionally limited to one product, so a new selection replaces the current one.
+    const next = [{ ...product, quantity: 1 }];
     save(next);
-  };
+  }, []);
 
-  const removeItem = (id) => save(items.filter((item) => item.id !== id));
-  const clear = () => save([]);
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const removeItem = useCallback((id) => save(items.filter((item) => item.id !== id)), [items]);
+  const clear = useCallback(() => {
+    localStorage.setItem("shoplite-cart", JSON.stringify([]));
+    setItems([]);
+  }, []);
+  const total = items[0] ? items[0].price : 0;
 
   const value = useMemo(() => ({ items, addItem, removeItem, clear, total }), [items, total, addItem, removeItem, clear]);
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

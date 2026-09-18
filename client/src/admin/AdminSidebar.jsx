@@ -44,7 +44,7 @@ export default function AdminSidebar({ open, onClose }) {
         </div>
         <NavItems />
         <div className="px-5 mt-6 text-xs text-slate-500 leading-relaxed">
-          Demo admin UI. No authentication, no persistence.
+          Review account activity, payments, and user reports.
         </div>
       </aside>
 
@@ -75,7 +75,7 @@ export default function AdminSidebar({ open, onClose }) {
         </div>
         <NavItems onNavigate={onClose} />
         <div className="px-5 mt-6 text-xs text-slate-500 leading-relaxed">
-          Demo admin UI. No authentication, no persistence.
+          Review account activity, payments, and user reports.
         </div>
       </aside>
     </>

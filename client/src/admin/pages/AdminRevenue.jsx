@@ -5,9 +5,13 @@ import { useApi } from "../../lib/useApi";
 
 export default function AdminRevenue() {
   const { data, loading, error } = useApi(api.revenue, []);
+  const usersState = useApi(api.users, []);
   if (loading) return <p className="text-slate-400">Loading revenue...</p>;
-  if (error) return <p className="text-rose-300">{error}</p>;
+  if (error || usersState.error) return <p className="text-rose-300">{error || usersState.error}</p>;
   const { total, monthly, avgOrder, bestMonth: best, topSpenders } = data;
+  const users = usersState.data || [];
+  const deposits = users.reduce((sum, user) => sum + Number(user.deposited || 0), 0);
+  const withdrawals = users.reduce((sum, user) => sum + Number(user.withdrawn || 0), 0);
   const avg = monthly.length ? total / monthly.length : 0;
   const max = Math.max(...monthly.map((m) => m.amount), 0);
 
@@ -16,15 +20,20 @@ export default function AdminRevenue() {
       <header>
         <h2 className="text-xl sm:text-2xl font-bold text-white">Revenue</h2>
         <p className="mt-1 text-sm text-slate-400">
-          Demo figures only. No real money is collected anywhere in this app.
+          Deposits, purchases, and account activity across the last six months.
         </p>
       </header>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={FiDollarSign}  label="Total (6 mo)"    value={`$${total.toFixed(2)}`}  accent="emerald" />
+        <StatCard icon={FiDollarSign}  label="Total purchases" value={`$${total.toFixed(2)}`}  accent="emerald" />
         <StatCard icon={FiTrendingUp}  label="Best Month"      value={best.month}  sub={`$${best.amount.toFixed(2)}`} accent="indigo" />
         <StatCard icon={FiBarChart2}   label="Monthly Average" value={`$${avg.toFixed(2)}`}    accent="fuchsia" />
         <StatCard icon={FiAward}       label="Avg Order"       value={`$${avgOrder.toFixed(2)}`} accent="amber" />
+      </div>
+      <div className="grid sm:grid-cols-3 gap-4">
+        <StatCard icon={FiDollarSign} label="Deposited" value={`$${deposits.toFixed(2)}`} sub="All users" accent="emerald" />
+        <StatCard icon={FiDollarSign} label="Withdrawn" value={`$${withdrawals.toFixed(2)}`} sub="All users" accent="amber" />
+        <StatCard icon={FiDollarSign} label="Money in use" value={`$${total.toFixed(2)}`} sub="Product purchases" accent="indigo" />
       </div>
 
       {/* Simple bar chart */}
@@ -53,7 +62,7 @@ export default function AdminRevenue() {
 
       {/* Top spenders */}
       <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
-        <h3 className="text-white font-semibold">Top Spenders (demo)</h3>
+        <h3 className="text-white font-semibold">Top spenders</h3>
         <ul className="mt-4 divide-y divide-white/5">
           {topSpenders.map((u) => (
             <li key={u.id} className="flex items-center justify-between py-3">

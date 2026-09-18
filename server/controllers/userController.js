@@ -45,6 +45,8 @@ export const createUser = async (req, res, next) => {
       orders: req.body.orders || 0,
       spent: req.body.spent || 0,
       status: req.body.status || "active",
+      phone: req.body.phone,
+      passwordHash: req.body.passwordHash || "legacy-account",
     });
     res.status(201).json(user);
   } catch (error) {

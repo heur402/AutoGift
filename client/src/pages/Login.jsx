@@ -5,7 +5,8 @@ import { useAuth } from "../lib/AuthContext";
 import FormMessage from "../components/FormMessage";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [form, setForm] = useState({ email: "", password: "", phone: "" });
+  const [role, setRole] = useState("user");
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -15,12 +16,11 @@ export default function Login() {
     event.preventDefault();
     setError("");
     try {
-      const users = await api.users(`?search=${encodeURIComponent(email.trim())}`);
-      const user = users.find((item) => item.email.toLowerCase() === email.trim().toLowerCase());
-      if (!user) throw new Error("No account was found for that email.");
-      if (user.status === "blocked") throw new Error("This account is blocked.");
+      const user = await api.login(role === "admin"
+        ? { email: form.email, password: form.password }
+        : form);
       login(user);
-      navigate(location.state?.from || "/profile");
+      navigate(user.role === "admin" ? "/admin" : location.state?.from || "/profile");
     } catch (err) {
       setError(err.message);
     }
@@ -29,8 +29,12 @@ export default function Login() {
   return (
     <AuthCard title="Welcome back" subtitle="Sign in to view your orders and profile.">
       <form onSubmit={submit} className="space-y-5">
-        <Field label="Email" type="email" value={email} onChange={setEmail} required />
-        <p className="text-xs text-slate-500">Demo mode uses your email only; password authentication is not enabled yet.</p>
+        <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-white/5">
+          {["user", "admin"].map((value) => <button key={value} type="button" onClick={() => setRole(value)} className={`py-2 rounded-lg text-sm capitalize ${role === value ? "bg-indigo-500 text-white" : "text-slate-400"}`}>{value} login</button>)}
+        </div>
+        <Field label="Email" type="email" value={form.email} onChange={(value) => setForm({ ...form, email: value })} required />
+        {role === "user" && <Field label="Phone number" type="tel" value={form.phone} onChange={(value) => setForm({ ...form, phone: value })} required />}
+        <Field label="Password" type="password" value={form.password} onChange={(value) => setForm({ ...form, password: value })} required />
         <FormMessage error={error} />
         <button className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold">
           Sign in

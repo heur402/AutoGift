@@ -20,14 +20,8 @@ export default function Cart() {
     setPlacing(true);
     setMessage("");
     try {
-      for (const item of items) {
-        await api.createOrder({
-          userId: user.id,
-          productId: item.id,
-          product: item.name,
-          amount: item.price * item.quantity,
-        });
-      }
+      const item = items[0];
+      await api.createOrder({ userId: user.id, productId: item.id, product: item.name, amount: item.price });
       clear();
       setMessage("Your order was placed successfully.");
     } catch (error) {
@@ -54,7 +48,7 @@ export default function Cart() {
             <div className="min-w-0 flex-1"><Link to={`/product/${item.id}`} className="font-medium text-white hover:text-indigo-300">{item.name}</Link><p className="text-sm text-slate-500">{item.currency} {item.price.toFixed(2)} each</p><p className="mt-2 text-sm text-slate-300">Quantity: {item.quantity}</p></div>
             <div className="text-right"><p className="text-indigo-300 font-semibold">${(item.price * item.quantity).toFixed(2)}</p><button onClick={() => removeItem(item.id)} className="mt-4 text-slate-500 hover:text-rose-300" aria-label={`Remove ${item.name}`}><FiTrash2 /></button></div>
           </div>)}</div>
-          <aside className="h-fit p-5 rounded-2xl bg-white/5 border border-white/10"><h2 className="text-white font-semibold">Order summary</h2><div className="mt-5 flex justify-between text-slate-300"><span>Subtotal</span><span>${total.toFixed(2)}</span></div><button disabled={placing} onClick={placeOrder} className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold disabled:opacity-50">{placing ? "Placing order..." : user ? "Place order" : "Sign in to checkout"}</button></aside>
+          <aside className="h-fit p-5 rounded-2xl bg-white/5 border border-white/10"><h2 className="text-white font-semibold">One-product order</h2><div className="mt-5 flex justify-between text-slate-300"><span>Total</span><span>${total.toFixed(2)}</span></div><p className="mt-3 text-xs text-slate-500">Your available balance is charged immediately.</p><button disabled={placing} onClick={placeOrder} className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold disabled:opacity-50">{placing ? "Placing order..." : user ? "Buy now" : "Sign in to checkout"}</button></aside>
         </div>
       )}
     </section>

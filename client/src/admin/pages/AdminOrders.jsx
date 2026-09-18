@@ -42,7 +42,7 @@ export default function AdminOrders() {
     <div className="space-y-6">
       <header>
         <h2 className="text-xl sm:text-2xl font-bold text-white">Orders</h2>
-        <p className="mt-1 text-sm text-slate-400">All orders across all users (demo).</p>
+        <p className="mt-1 text-sm text-slate-400">        Every product purchase, with customer and fulfillment status.</p>
       </header>
       {error && <p className="text-rose-300">{error}</p>}
 

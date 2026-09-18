@@ -23,8 +23,8 @@ export const getNotification = async (req, res, next) => {
 
 export const createNotification = async (req, res, next) => {
   try {
-    if (!req.body.message?.trim()) {
-      throw errorWithStatus("message is required", 400);
+    if (!req.body.title?.trim() || !req.body.message?.trim()) {
+      throw errorWithStatus("title and message are required", 400);
     }
     if (req.body.userId && !(await User.exists({ id: req.body.userId }))) {
       throw errorWithStatus("User not found", 404);
@@ -37,6 +37,7 @@ export const createNotification = async (req, res, next) => {
     const notification = await Notification.create({
       id: req.body.id || `n-${Date.now()}`,
       userId: req.body.userId,
+      title: req.body.title,
       message: req.body.message,
       read: req.body.read || false,
     });
