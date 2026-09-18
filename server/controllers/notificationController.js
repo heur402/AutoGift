@@ -8,7 +8,12 @@ const errorWithStatus = (message, statusCode) => {
 };
 
 export const listNotifications = async (req, res, next) => {
-  next(errorWithStatus("Use /api/notifications/:userId", 404));
+  try {
+    const notifications = await Notification.find().sort({ createdAt: -1 });
+    res.json(notifications);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getNotification = async (req, res, next) => {

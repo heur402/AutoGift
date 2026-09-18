@@ -37,6 +37,11 @@ export const api = {
     request(`/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
   revenue: () => request("/revenue/summary"),
   notifications: (userId) => request(`/notifications/${userId}`),
+  allNotifications: () => request("/notifications"),
+  markNotificationRead: (id) =>
+    request(`/notifications/${id}/read`, { method: "PATCH" }),
+  deleteNotification: (id) =>
+    request(`/notifications/${id}`, { method: "DELETE" }),
   wallet: (userId) => request(`/wallet/${userId}`),
   createWalletTransaction: (userId, type, amount) =>
     request(`/wallet/${userId}`, { method: "POST", body: JSON.stringify({ type, amount }) }),

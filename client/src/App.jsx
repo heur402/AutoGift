@@ -20,6 +20,7 @@ import AdminOverview from "./admin/pages/AdminOverview";
 import AdminUsers from "./admin/pages/AdminUsers";
 import AdminOrders from "./admin/pages/AdminOrders";
 import AdminRevenue from "./admin/pages/AdminRevenue";
+import AdminNotifications from "./admin/pages/AdminNotifications";
 import AdminAuthLayout from "./admin/AdminAuthLayout";
 import AdminLogin from "./admin/AdminLogin";
 import AdminRegister from "./admin/AdminRegister";
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="users"   element={<AdminUsers />} />
         <Route path="orders"  element={<AdminOrders />} />
         <Route path="revenue" element={<AdminRevenue />} />
+        <Route path="notifications" element={<AdminNotifications />} />
       </Route>
     </Routes>
   );

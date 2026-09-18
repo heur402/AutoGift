@@ -1,6 +1,7 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import User from "../models/User.js";
+import Notification from "../models/Notification.js";
 
 const errorWithStatus = (message, statusCode) => {
   const error = new Error(message);
@@ -81,6 +82,15 @@ export const createOrder = async (req, res, next) => {
       status: req.body.status || "pending",
     });
     await updateUserTotals(order.userId);
+    const admins = await User.find({ role: "admin", status: "active" }).select("id");
+    if (admins.length) {
+      await Notification.insertMany(admins.map((admin, index) => ({
+        id: `n-order-${order.id}-${index}`,
+        userId: admin.id,
+        title: "New product purchase",
+        message: `${user.name} bought ${order.product} for $${order.amount.toFixed(2)}.`,
+      })));
+    }
     res.status(201).json(order);
   } catch (error) {
     next(error);

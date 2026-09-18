@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import {
-  FiGrid, FiUsers, FiShoppingBag, FiDollarSign, FiX,
+  FiGrid, FiUsers, FiShoppingBag, FiDollarSign, FiBell, FiX,
 } from "react-icons/fi";
 
 const nav = [
@@ -8,6 +8,7 @@ const nav = [
   { to: "/admin/users",   label: "Users",    icon: FiUsers },
   { to: "/admin/orders",  label: "Orders",   icon: FiShoppingBag },
   { to: "/admin/revenue", label: "Revenue",  icon: FiDollarSign },
+  { to: "/admin/notifications", label: "Notifications", icon: FiBell },
 ];
 
 function NavItems({ onNavigate }) {
