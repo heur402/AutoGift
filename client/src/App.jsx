@@ -20,6 +20,9 @@ import AdminOverview from "./admin/pages/AdminOverview";
 import AdminUsers from "./admin/pages/AdminUsers";
 import AdminOrders from "./admin/pages/AdminOrders";
 import AdminRevenue from "./admin/pages/AdminRevenue";
+import AdminAuthLayout from "./admin/AdminAuthLayout";
+import AdminLogin from "./admin/AdminLogin";
+import AdminRegister from "./admin/AdminRegister";
 
 export default function App() {
   return (
@@ -38,6 +41,11 @@ export default function App() {
         <Route path="/profile"     element={<Profile />} />
         <Route path="/cart"        element={<Cart />} />
         <Route path="*"            element={<NotFound />} />
+      </Route>
+
+      <Route element={<AdminAuthLayout />}>
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/register" element={<AdminRegister />} />
       </Route>
 
       {/* Admin — has Sidebar + Topbar only, no store chrome */}
